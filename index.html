@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillsUSA Chapter Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for clean icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="header-container">
+            <div class="logo-area">
+                <i class="fa-solid fa-gavel logo-icon"></i>
+                <div>
+                    <h1>SkillsUSA Portal</h1>
+                    <p>Local Chapter Hub</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard" class="active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                    <li><a href="#events"><i class="fa-solid fa-calendar-days"></i> Events</a></li>
+                    <li><a href="#roles"><i class="fa-solid fa-users-gear"></i> Positions</a></li>
+                    <li><a href="#files"><i class="fa-solid fa-folder-open"></i> Document Hub</a></li>
+                    <li><a href="#gallery"><i class="fa-solid fa-images"></i> Gallery</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="container">
+        
+        <!-- Left Column: Primary Sections -->
+        <section class="main-content">
+            
+            <!-- Dashboard / Welcome -->
+            <div id="dashboard" class="card welcome-card">
+                <h2>Welcome to Your SkillsUSA Portal</h2>
+                <p>Prepare America's skilled workforce. Access your upcoming meeting agendas, view skill competition tracks, download preparation documents, and track chapter events directly from this central hub.</p>
+                <div class="quick-stats">
+                    <div class="stat-item"><i class="fa-solid fa-star"></i> <span>Next Meeting: Sept 10</span></div>
+                    <div class="stat-item"><i class="fa-solid fa-trophy"></i> <span>15+ Competitions</span></div>
+                    <div class="stat-item"><i class="fa-solid fa-file-pdf"></i> <span>5 Active Resources</span></div>
+                </div>
+            </div>
+
+            <!-- Events & Meetings Timeline -->
+            <div id="events" class="card">
+                <h3 class="section-title"><i class="fa-solid fa-clock-history"></i> Upcoming Meetings & Activities</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Sep 10</div>
+                        <div class="timeline-body">
+                            <h4>First General Chapter Meeting</h4>
+                            <p class="time-location"><i class="fa-solid fa-clock"></i> 3:30 PM - 4:30 PM | <i class="fa-solid fa-location-dot"></i> Room 204 (Main Lab)</p>
+                            <p>Introduction to the SkillsUSA framework, officer introductions, and initial event sign-ups.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Sep 24</div>
+                        <div class="timeline-body">
+                            <h4>Leadership Training Workshop</h4>
+                            <p class="time-location"><i class="fa-solid fa-clock"></i> 4:00 PM - 5:30 PM | <i class="fa-solid fa-location-dot"></i> Lecture Hall B</p>
+                            <p>Mandatory workshop for running officers and open to any members developing leadership portfolios.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">Oct 15</div>
+                        <div class="timeline-body">
+                            <h4>Fall Leadership Conference (FLC) Prep</h4>
+                            <p class="time-location"><i class="fa-solid fa-clock"></i> 3:30 PM - 5:00 PM | <i class="fa-solid fa-location-dot"></i> Room 204</p>
+                            <p>Final logistics, code of conduct review, and professional attire inspection before travel.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competitions and Officer Positions Grid -->
+            <div id="roles" class="card">
+                <div class="card-header-flex">
+                    <h3 class="section-title"><i class="fa-solid fa-users-gear"></i> Positions & Pathways</h3>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterItems('all')">All</button>
+                        <button class="filter-btn" onclick="filterItems('officer')">Officers</button>
+                        <button class="filter-btn" onclick="filterItems('competition')">Competitions</button>
+                    </div>
+                </div>
+                
+                <div class="roles-grid" id="rolesGrid">
+                    <!-- Officers -->
+                    <div class="role-item filter-item officer">
+                        <div class="badge badge-red">Executive</div>
+                        <h4>Chapter President</h4>
+                        <p>Leads chapter business meetings, coordinates officer committees, and acts as the official face of the local chapter.</p>
+                    </div>
+                    <div class="role-item filter-item officer">
+                        <div class="badge badge-red">Executive</div>
+                        <h4>Vice President</h4>
+                        <p>Presides over meetings in the president's absence, manages the chapter program of work, and coordinates committee chairs.</p>
+                    </div>
+                    <div class="role-item filter-item officer">
+                        <div class="badge badge-red">Administration</div>
+                        <h4>Secretary & Treasurer</h4>
+                        <p>Keeps systematic meeting minutes, manages local roll calls, maintains financial records, and monitors chapter dues.</p>
+                    </div>
+                    
+                    <!-- Competitions -->
+                    <div class="role-item filter-item competition">
+                        <div class="badge badge-gold">Skilled & Technical</div>
+                        <h4>Welding / Automotive Tech</h4>
+                        <p>Hands-on skill assessments covering technical blueprints, assembly procedures, and strict workplace safety protocols.</p>
+                    </div>
+                    <div class="role-item filter-item competition">
+                        <div class="badge badge-gold">Leadership</div>
+                        <h4>Extemporaneous Speaking</h4>
+                        <p>Develops skills to deliver a clear, structured speech on a given technical or career topic given minimal preparation time.</p>
+                    </div>
+                    <div class="role-item filter-item competition">
+                        <div class="badge badge-gold">Occupation</div>
+                        <h4>Web Design & Development</h4>
+                        <p>Team event assessing code structural design, functional responsive stylesheets, layout design, and client-side logic.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document & Conversation Portal -->
+            <div id="files" class="card">
+                <h3 class="section-title"><i class="fa-solid fa-folder-open"></i> Meeting Records & Files Hub</h3>
+                <p class="section-desc">Download official logs, structured guidelines, and conversational summaries from prior chapter sessions.</p>
+                <div class="files-list">
+                    <div class="file-row">
+                        <div class="file-info">
+                            <i class="fa-regular fa-file-pdf file-icon text-red"></i>
+                            <div>
+                                <strong>Meeting_Minutes_Sept_10.pdf</strong>
+                                <span class="file-meta">142 KB • Added 1 day ago</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn-download"><i class="fa-solid fa-download"></i> View</a>
+                    </div>
+                    <div class="file-row">
+                        <div class="file-info">
+                            <i class="fa-regular fa-file-word file-icon text-blue"></i>
+                            <div>
+                                <strong>Chapter_Officer_Application.docx</strong>
+                                <span class="file-meta">85 KB • Requirements & Forms</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn-download"><i class="fa-solid fa-download"></i> Download</a>
+                    </div>
+                    <div class="file-row">
+                        <div class="file-info">
+                            <i class="fa-regular fa-file-excel file-icon text-green"></i>
+                            <div>
+                                <strong>SkillsUSA_Budget_Draft.xlsx</strong>
+                                <span class="file-meta">54 KB • Approved 2026 Allocations</span>
+                            </div>
+                        </div>
+                        <a href="#" class="btn-download"><i class="fa-solid fa-download"></i> Download</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Gallery -->
+            <div id="gallery" class="card">
+                <h3 class="section-title"><i class="fa-solid fa-images"></i> Chapter Gallery</h3>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <div class="placeholder-img"><i class="fa-solid fa-user-group"></i></div>
+                        <div class="gallery-caption">Opening General Session</div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="placeholder-img"><i class="fa-solid fa-medal"></i></div>
+                        <div class="gallery-caption">State Leadership Conf</div>
+                    </div>
+                    <div class="gallery-item">
+                        <div class="placeholder-img"><i class="fa-solid fa-handshake"></i></div>
+                        <div class="gallery-caption">Community Service Project</div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Sidebar Calendar Widget -->
+        <aside class="sidebar">
+            <div class="card calendar-card">
+                <h3><i class="fa-regular fa-calendar-check"></i> Interactive Quick View</h3>
+                <div class="calendar-header">
+                    <span id="monthYear">September 2026</span>
+                </div>
+                <div class="calendar-weekdays">
+                    <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                </div>
+                <div class="calendar-days" id="calendarDays">
+                    <!-- Days injected dynamically via script.js -->
+                </div>
+                <div class="calendar-legend">
+                    <span class="legend-item"><span class="dot meeting-dot"></span> Meeting</span>
+                    <span class="legend-item"><span class="dot dead-dot"></span> Special Event</span>
+                </div>
+            </div>
+
+            <div class="card resource-card">
+                <h3><i class="fa-solid fa-circle-info"></i> Official Motto</h3>
+                <div class="motto-box">
+                    <p class="motto-text">"SkillsUSA: Champions at Work"</p>
+                </div>
+                <p style="font-size: 0.85rem; color: #555; line-height: 1.4;">The SkillsUSA Framework shapes integral workplace skills, technical abilities, and personal professional growth pillars.</p>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Footer Footer -->
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2026 SkillsUSA Local Chapter Portal. Built for excellence.</p>
+            <p>Developing Personal, Workplace, and Technical Skills Grounded in Academics.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillsUSA Chapter Portal</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for clean modern icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
 </head>
 <body>
@@ -24,33 +23,26 @@
 
     <!-- MAIN DASHBOARD (PUBLIC VIEW) -->
     <main id="dashboard-view" class="container">
-        <!-- Hero Section -->
         <header class="hero">
             <h1>Welcome to our SkillsUSA Chapter</h1>
             <p>Your central hub for events, competitions, leadership roles, and chapter resources.</p>
         </header>
 
         <div class="dashboard-grid">
-            <!-- Left Column: Events & Gallery -->
             <div class="main-column">
                 <!-- Events Section -->
                 <section class="card">
                     <h2><i class="fa-solid fa-calendar-days text-primary"></i> Upcoming Events & Meetings</h2>
-                    <div id="events-list" class="timeline">
-                        <!-- Dynamic items load here -->
-                    </div>
+                    <div id="events-list" class="timeline"></div>
                 </section>
 
                 <!-- Gallery Section -->
                 <section class="card">
                     <h2><i class="fa-solid fa-images text-primary"></i> Photo Gallery</h2>
-                    <div id="gallery-grid" class="gallery-grid">
-                        <!-- Dynamic items load here -->
-                    </div>
+                    <div id="gallery-grid" class="gallery-grid"></div>
                 </section>
             </div>
 
-            <!-- Right Column: Competitions/Officers & Files -->
             <div class="sidebar-column">
                 <!-- Competitions & Officers Section -->
                 <section class="card">
@@ -60,17 +52,13 @@
                         <button class="filter-btn" data-filter="Officer">Officers</button>
                         <button class="filter-btn" data-filter="Competition">Competitions</button>
                     </div>
-                    <div id="roles-list" class="roles-list">
-                        <!-- Dynamic items load here -->
-                    </div>
+                    <div id="roles-list" class="roles-list"></div>
                 </section>
 
                 <!-- File Portal Section -->
                 <section class="card">
                     <h2><i class="fa-solid fa-folder-open text-primary"></i> Document Portal</h2>
-                    <div id="files-list" class="files-list">
-                        <!-- Dynamic items load here -->
-                    </div>
+                    <div id="files-list" class="files-list"></div>
                 </section>
             </div>
         </div>
@@ -87,7 +75,6 @@
         <section class="card admin-card">
             <h3 id="form-title">Create New Entry</h3>
             <form id="admin-form">
-                <!-- Hidden inputs to track edits -->
                 <input type="hidden" id="item-id">
                 <input type="hidden" id="form-action" value="create">
 
@@ -102,7 +89,6 @@
                     </select>
                 </div>
 
-                <!-- Dynamic input clusters managed by JS -->
                 <div id="dynamic-inputs"></div>
 
                 <div class="form-actions">
@@ -112,7 +98,7 @@
             </form>
         </section>
 
-        <!-- Management/CRUD Data Table -->
+        <!-- Management Data Table -->
         <section class="card admin-card">
             <h3>Manage Existing Content</h3>
             <div class="table-responsive">
@@ -125,14 +111,13 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="management-table-body">
-                        <!-- Existing database entries load here with Edit/Delete buttons -->
-                    </tbody>
+                    <tbody id="management-table-body"></tbody>
                 </table>
             </div>
         </section>
     </div>
 
+    <!-- Script loaded explicitly at the end -->
     <script src="script.js"></script>
 </body>
 </html>

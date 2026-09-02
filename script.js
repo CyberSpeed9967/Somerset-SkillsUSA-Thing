@@ -1,7 +1,7 @@
-// --- Security Configuration Engine ---
+// --- Password Key ---
 const ADMIN_PASSWORD = "SkillsUSA2026";
 
-// --- State Database Engine ---
+// --- Global Application Database Array ---
 let appData = JSON.parse(localStorage.getItem('skillsusa_portal_data')) || [
     { id: "1", type: "event", title: "Chapter Kickoff Meeting", datetime: "Oct 12, 4:00 PM", desc: "Introduction to Competitions and officer election schedules." },
     { id: "2", type: "role", title: "Chapter President", category: "Officer", desc: "Leads local meetings and coordinates chapter tasks." },
@@ -10,25 +10,23 @@ let appData = JSON.parse(localStorage.getItem('skillsusa_portal_data')) || [
     { id: "5", type: "gallery", title: "State Conference", url: "https://unsplash.com" }
 ];
 
-// --- Authentication Session Check ---
 function checkAuth() {
     return sessionStorage.getItem('admin_authenticated') === 'true';
 }
 
-// --- App Initialization Setup ---
-document.addEventListener("DOMContentLoaded", () => {
+// FIXED: Wrapping execution safely in window.onload guarantees the browser finds the buttons!
+window.onload = function() {
     renderDashboard();
     setupEventListeners();
     setupDynamicFormInputs();
-});
+};
 
-// --- Core Workspace Router ---
 function setupEventListeners() {
     const loginBtn = document.getElementById("admin-login-btn");
     const logoutBtn = document.getElementById("admin-logout-btn");
     const dashboardNavBtn = document.getElementById("view-dashboard-btn");
 
-    // Enforced Password Protected Access Routing
+    // Click logic for Admin Access
     loginBtn.addEventListener("click", () => {
         if (checkAuth()) {
             showAdminPanel();
@@ -51,7 +49,7 @@ function setupEventListeners() {
 
     dashboardNavBtn.addEventListener("click", showDashboardView);
 
-    // FIXED: Filtering controls for Roles/Competitions
+    // Filter subtabs logic
     const filterButtons = document.querySelectorAll(".filter-btn");
     filterButtons.forEach(btn => {
         btn.addEventListener("click", (e) => {
@@ -63,7 +61,6 @@ function setupEventListeners() {
         });
     });
 
-    // Form Submissions
     document.getElementById("item-type").addEventListener("change", setupDynamicFormInputs);
     document.getElementById("admin-form").addEventListener("submit", handleFormSubmit);
     document.getElementById("cancel-edit-btn").addEventListener("click", resetAdminForm);
@@ -92,7 +89,6 @@ function showDashboardView() {
     renderDashboard();
 }
 
-// --- Dynamic Form Renderer ---
 function setupDynamicFormInputs() {
     const type = document.getElementById("item-type").value;
     const container = document.getElementById("dynamic-inputs");
@@ -100,24 +96,23 @@ function setupDynamicFormInputs() {
 
     if (!type) return;
 
-    let fields = `<div class="form-group"><label>Title / Name</label><input type="text" id="input-title" required placeholder="e.g., Regional Leadership Conference"></div>`;
+    let fields = `<div class="form-group"><label>Title / Name</label><input type="text" id="input-title" required placeholder="Name/Title entry..."></div>`;
 
     if (type === "event") {
         fields += `<div class="form-group"><label>Date & Time String</label><input type="text" id="input-datetime" required placeholder="e.g., Oct 24, 5:00 PM"></div>`;
     } else if (type === "role") {
         fields += `<div class="form-group"><label>Role Classification</label><select id="input-category" required><option value="Officer">Officer Position</option><option value="Competition">Skills Competition</option></select></div>`;
     } else if (type === "gallery" || type === "file") {
-        fields += `<div class="form-group"><label>${type === 'gallery' ? 'Image Web URL' : 'File Target URL'}</label><input type="text" id="input-url" required placeholder="e.g., https://google.com..."></div>`;
+        fields += `<div class="form-group"><label>${type === 'gallery' ? 'Image URL' : 'File Target URL'}</label><input type="text" id="input-url" required placeholder="https://..."></div>`;
     }
 
-    fields += `<div class="form-group"><label>Short Description</label><textarea id="input-desc" rows="3" placeholder="Brief outline detailing the entry..."></textarea></div>`;
+    fields += `<div class="form-group"><label>Short Description</label><textarea id="input-desc" rows="3" placeholder="Brief details..."></textarea></div>`;
     container.innerHTML = fields;
 }
 
-// --- CRUD Database Operations ---
 function handleFormSubmit(e) {
     e.preventDefault();
-    if (!checkAuth()) return alert("Session expired. Please log in again.");
+    if (!checkAuth()) return alert("Session unauthorized.");
 
     const id = document.getElementById("item-id").value;
     const action = document.getElementById("form-action").value;
@@ -141,10 +136,10 @@ function handleFormSubmit(e) {
         appData.push(newItem);
     }
 
-    saveData();
+    localStorage.setItem('skillsusa_portal_data', JSON.stringify(appData));
     resetAdminForm();
     renderManagementTable();
-    alert("Database update executed successfully!");
+    alert("Saved successfully!");
 }
 
 function startEdit(id) {
@@ -169,17 +164,13 @@ function startEdit(id) {
 
     document.getElementById("submit-btn").innerText = "Update Item";
     document.getElementById("cancel-edit-btn").classList.remove("hidden");
-    
-    document.getElementById("admin-form").scrollIntoView({ behavior: 'smooth' });
 }
-
-// FIXED: Exposed globally to handle inline HTML onclick events cleanly
 window.startEdit = startEdit;
 
 function deleteItem(id) {
-    if (confirm("Are you sure you want to permanently delete this item?")) {
+    if (confirm("Permanently delete this entry?")) {
         appData = appData.filter(item => item.id !== id);
-        saveData();
+        localStorage.setItem('skillsusa_portal_data', JSON.stringify(appData));
         renderManagementTable();
     }
 }
@@ -190,20 +181,12 @@ function resetAdminForm() {
     document.getElementById("form-title").innerText = "Create New Entry";
     document.getElementById("form-action").value = "create";
     document.getElementById("item-id").value = "";
-    
-    const typeSelect = document.getElementById("item-type");
-    typeSelect.disabled = false;
-    
+    document.getElementById("item-type").disabled = false;
     document.getElementById("dynamic-inputs").innerHTML = "";
     document.getElementById("submit-btn").innerText = "Save Entry";
     document.getElementById("cancel-edit-btn").classList.add("hidden");
 }
 
-function saveData() {
-    localStorage.setItem('skillsusa_portal_data', JSON.stringify(appData));
-}
-
-// --- Public Dashboard UI Render Engine ---
 function renderDashboard() {
     renderEvents();
     renderRoles("all");
@@ -214,7 +197,7 @@ function renderDashboard() {
 function renderEvents() {
     const container = document.getElementById("events-list");
     const events = appData.filter(i => i.type === "event");
-    container.innerHTML = events.length ? "" : "<p>No upcoming events or meetings currently posted.</p>";
+    container.innerHTML = events.length ? "" : "<p>No upcoming events posted.</p>";
     events.forEach(ev => {
         container.innerHTML += `
             <div class="timeline-item">
@@ -228,5 +211,17 @@ function renderEvents() {
 function renderRoles(filter) {
     const container = document.getElementById("roles-list");
     const roles = appData.filter(i => i.type === "role" && (filter === "all" || i.category === filter));
-    container.innerHTML = roles.length ? "" : "<p>No entries found.</p>";
-roles.forEach(r => {const badgeClass = r.category === "Officer" ? "badge-officer" : "badge-competition";container.innerHTML +=  <div class="role-card"> <span class="badge ${badgeClass}">${r.category}</span> <strong style="display:block; font-size:1rem;">${r.title}</strong> <p style="font-size:0.85rem; color:#475569; margin-top:2px;">${r.desc}</p> </div>;});}function renderFiles() {const container = document.getElementById("files-list");const files = appData.filter(i => i.type === "file");container.innerHTML = files.length ? "" : "No documentation uploads listed yet.";files.forEach(f => {container.innerHTML +=  <a href="${f.url}" target="_blank" class="file-link"> <i class="fa-solid fa-file-pdf"></i> <div> <strong style="font-size:0.9rem; display:block;">${f.title}</strong> <span style="font-size:0.75rem; color:#64748B;">${f.desc}</span> </div> </a>;});}function renderGallery() {const container = document.getElementById("gallery-grid");const photos = appData.filter(i => i.type === "gallery");container.innerHTML = photos.length ? "" : "No image gallery objects uploaded.";photos.forEach(p => {container.innerHTML +=  <div class="gallery-card"> <img src="${p.url}" alt="${p.title}" onerror="this.src='https://unsplash.com'"> <div class="gallery-caption">${p.title}</div> </div>;});}// --- Management Table Interface Render Engine ---function renderManagementTable() {const tbody = document.getElementById("management-table-body");tbody.innerHTML = appData.length ? "" : "No entries exist in database yet.";appData.forEach(item => {let secondColumn = item.desc;let thirdColumn = "";if (item.type === "event") thirdColumn = ⏱️ ${item.datetime};if (item.type === "role") thirdColumn = 🏷️ Category: <b>${item.category}</b>;if (item.type === "gallery" || item.type === "file") {thirdColumn = <a href="${item.url}" target="_blank" class="text-primary" style="word-break:break-all;">${item.url}</a>;}tbody.innerHTML += `${item.type}${item.title}\({thirdColumn}<br>\){secondColumn}`;});}
+    container.innerHTML = roles.length ? "" : "<p>No positions found.</p>";
+    roles.forEach(r => {
+        const badgeClass = r.category === "Officer" ? "badge-officer" : "badge-competition";
+        container.innerHTML += `
+            <div class="role-card">
+                <span class="badge ${badgeClass}">${r.category}</span>
+                <strong style="display:block; font-size:1rem;">${r.title}</strong>
+                <p style="font-size:0.85rem; color:#475569; margin-top:2px;">${r.desc}</p>
+            </div>`;
+    });
+}
+
+function renderFiles() {
+    const container = document.getElementById("files-list");

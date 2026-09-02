@@ -1,8 +1,7 @@
-/* --- SkillsUSA Official Color Guidelines --- */
 :root {
-    --primary-blue: #002F6C;    /* SkillsUSA Navy Blue */
-    --accent-red: #D22630;      /* SkillsUSA Crimson Red */
-    --gold: #FFC72C;            /* SkillsUSA Gold */
+    --primary-blue: #002F6C;
+    --accent-red: #D22630;
+    --gold: #FFC72C;
     --light-bg: #F4F6F9;
     --dark-text: #1E293B;
     --white: #FFFFFF;
@@ -268,7 +267,7 @@ body {
     text-overflow: ellipsis;
 }
 
-/* --- Admin Framework Inputs --- */
+/* --- Admin Panel Forms --- */
 .admin-header {
     margin-bottom: 25px;
     border-bottom: 2px solid var(--border-color);

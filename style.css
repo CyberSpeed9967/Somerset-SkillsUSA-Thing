@@ -1,4 +1,14 @@
-/* Basic Web Page Setup */
+/* --- SkillsUSA Official Color Guidelines --- */
+:root {
+    --primary-blue: #002F6C;    /* SkillsUSA Navy Blue */
+    --accent-red: #D22630;      /* SkillsUSA Crimson Red */
+    --gold: #FFC72C;            /* SkillsUSA Gold */
+    --light-bg: #F4F6F9;
+    --dark-text: #1E293B;
+    --white: #FFFFFF;
+    --border-color: #E2E8F0;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,77 +16,99 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-:root {
-    --navy: #002F6C;
-    --crimson: #D22630;
-    --gold: #FFC72C;
-    --bg: #F4F6F9;
-    --card-bg: #FFFFFF;
-    --text-dark: #333333;
-    --text-light: #777777;
-}
-
 body {
-    background-color: var(--bg);
-    color: var(--text-dark);
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    line-height: 1.6;
+    padding-bottom: 60px;
 }
 
-/* Header Layout Styles */
-.main-header {
-    background-color: var(--navy);
-    color: white;
-    padding: 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Navigation --- */
+.navbar {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.logo {
-    font-size: 1.5rem;
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-size: 1.4rem;
     font-weight: bold;
-}
-
-.text-gold {
-    color: var(--gold);
-}
-
-.nav-links a {
-    color: #E0E6ED;
+    color: var(--white);
     text-decoration: none;
-    margin-left: 20px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--white);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
     font-weight: 500;
-    transition: color 0.3s;
+    transition: all 0.2s ease;
 }
 
-.nav-links a:hover, .nav-links a.active {
-    color: var(--gold);
+.nav-btn:hover, .nav-btn.active {
+    background-color: rgba(255,255,255,0.15);
+    border-color: var(--gold);
 }
 
-/* Tab Content Visibility Switch rules */
-.portal-container {
-    padding: 30px 5%;
+.login-btn {
+    border-color: rgba(255,255,255,0.3);
 }
 
-.tab-view {
-    display: none;
+.logout-btn {
+    background-color: var(--accent-red);
 }
 
-.tab-view.active {
-    display: block;
+/* --- Hero --- */
+.hero {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #001f47 100%);
+    color: var(--white);
+    padding: 40px 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 5px solid var(--accent-red);
 }
 
-/* Grid Structures */
+.hero h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+/* --- Dashboard Grid Architecture --- */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 25px;
-}
-
-.admin-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 30px;
 }
 
 @media (max-width: 900px) {
@@ -85,145 +117,215 @@ body {
     }
 }
 
-/* Cards & Content Component Outlines */
 .card {
-    background: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background-color: var(--white);
+    border-radius: 10px;
+    padding: 24px;
     margin-bottom: 25px;
-    overflow: hidden;
-    border-left: 5px solid var(--navy);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
 }
 
-.admin-card {
-    border-left: 5px solid var(--crimson);
-}
-
-.card-header {
-    background: #FAFAFA;
-    padding: 15px 20px;
-    border-bottom: 1px solid #EEEEEE;
-}
-
-.card-header h2, .card-header h3 {
-    font-size: 1.15rem;
-    color: var(--navy);
+.card h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
+    border-bottom: 2px solid var(--light-bg);
+    padding-bottom: 10px;
 }
 
-.admin-hdr h3 {
-    color: var(--crimson);
+.text-primary { color: var(--primary-blue); }
+
+/* --- Component: Timeline / Events --- */
+.timeline {
+    position: relative;
+    padding-left: 20px;
+    border-left: 3px solid var(--border-color);
 }
 
-.card-content {
-    padding: 20px;
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
 }
 
-/* Elements UI Layouts */
-.item-row {
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -27px;
+    top: 5px;
+    background-color: var(--accent-red);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+}
+
+.event-time {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--accent-red);
+    display: block;
+}
+
+.event-title {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+/* --- Component: Roles / Competitions --- */
+.filter-tabs {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #F0F2F5;
+    gap: 8px;
+    margin-bottom: 15px;
 }
 
-.item-row:last-child {
-    border-bottom: none;
+.filter-btn {
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.filter-btn.active {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+}
+
+.role-card {
+    background-color: var(--light-bg);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--gold);
 }
 
 .badge {
-    background: #EBF3FF;
-    color: var(--navy);
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
     font-weight: bold;
+    margin-bottom: 4px;
 }
 
-.badge-alt {
-    background: #FFF9E6;
-    color: #B28200;
+.badge-officer { background-color: #E0F2FE; color: #0369A1; }
+.badge-competition { background-color: #FEF3C7; color: #B45309; }
+
+/* --- Component: Files & Gallery --- */
+.file-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: var(--light-bg);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--dark-text);
+    margin-bottom: 10px;
+    transition: background 0.2s;
 }
 
-/* Gallery Module Layout */
+.file-link:hover {
+    background-color: #E2E8F0;
+}
+
+.file-link i {
+    font-size: 1.3rem;
+    color: var(--accent-red);
+}
+
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
 }
 
-.gallery-grid img {
+.gallery-card {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+}
+
+.gallery-card img {
     width: 100%;
-    height: 90px;
+    height: 120px;
     object-fit: cover;
-    border-radius: 6px;
-    border: 1px solid #DDD;
+    display: block;
 }
 
-/* Forms and Inputs Styles */
+.gallery-caption {
+    padding: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Admin Framework Inputs --- */
+.admin-header {
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
 
 .form-group label {
     display: block;
-    font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 5px;
-    color: var(--text-dark);
+    font-size: 0.9rem;
 }
 
-.form-group input, .form-group select {
+.form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #CCCCCC;
-    border-radius: 4px;
-    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
 }
 
-/* Control Buttons Layout */
 .btn {
-    padding: 10px 18px;
+    padding: 10px 20px;
+    border-radius: 6px;
     border: none;
-    border-radius: 4px;
-    font-weight: bold;
     cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-primary { background-color: var(--primary-blue); color: var(--white); }
+.btn-secondary { background-color: #E2E8F0; color: var(--dark-text); margin-left: 8px;}
+.btn-danger { background-color: var(--accent-red); color: var(--white); padding: 5px 10px; font-size: 0.8rem;}
+.btn-edit { background-color: var(--gold); color: var(--dark-text); padding: 5px 10px; font-size: 0.8rem; margin-right: 4px;}
+
+/* --- Control Table Management --- */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
     font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
 }
 
-.btn-primary {
-    background-color: var(--navy);
-    color: white;
+.admin-table th, .admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.btn-primary:hover {
-    background-color: #001F47;
-}
-
-.btn-danger {
-    background-color: var(--crimson);
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #A61A22;
-}
-
-.file-link {
-    color: var(--navy);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 500;
-}
-
-.file-link:hover {
-    text-decoration: underline;
+.admin-table th {
+    background-color: var(--light-bg);
+    font-weight: 600;
 }

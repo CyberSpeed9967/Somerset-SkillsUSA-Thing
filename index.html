@@ -5,164 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillsUSA Chapter Portal</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome for clean modern icons -->
+    <link rel="stylesheet" href="https://cloudflare.com">
 </head>
 <body>
 
-    <!-- Top Navigation Bar -->
-    <header class="main-header">
-        <div class="logo">
-            <i class="fas fa-shield-alt text-gold"></i> SkillsUSA Portal
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand" id="nav-logo">🏆 SkillsUSA Portal</a>
+            <div class="nav-links">
+                <button id="view-dashboard-btn" class="nav-btn active"><i class="fa-solid fa-gauge"></i> Dashboard</button>
+                <button id="admin-login-btn" class="nav-btn login-btn"><i class="fa-solid fa-lock"></i> Admin Login</button>
+                <button id="admin-logout-btn" class="nav-btn logout-btn hidden"><i class="fa-solid fa-lock-open"></i> Logout</button>
+            </div>
         </div>
-        <nav class="nav-links">
-            <a href="#" class="active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="#" onclick="switchTab('admin')"><i class="fas fa-user-cog"></i> Admin Panel</a>
-        </nav>
-    </header>
+    </nav>
 
-    <!-- Main Workspace Container -->
-    <main class="portal-container">
+    <!-- MAIN DASHBOARD (PUBLIC VIEW) -->
+    <main id="dashboard-view" class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1>Welcome to our SkillsUSA Chapter</h1>
+            <p>Your central hub for events, competitions, leadership roles, and chapter resources.</p>
+        </header>
 
-        <!-- DASHBOARD VIEW -->
-        <section id="dashboard-view" class="tab-view active">
-            <div class="dashboard-grid">
-                
-                <!-- Left Main Content Column -->
-                <div class="main-column">
-                    <!-- Events Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-calendar-alt"></i> Upcoming Events & Meetings</h2>
-                        </div>
-                        <div class="card-content" id="display-events">
-                            <!-- Injected dynamically -->
-                        </div>
+        <div class="dashboard-grid">
+            <!-- Left Column: Events & Gallery -->
+            <div class="main-column">
+                <!-- Events Section -->
+                <section class="card">
+                    <h2><i class="fa-solid fa-calendar-days text-primary"></i> Upcoming Events & Meetings</h2>
+                    <div id="events-list" class="timeline">
+                        <!-- Dynamic items load here -->
                     </div>
+                </section>
 
-                    <!-- Positions Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-trophy"></i> Competitions & Officer Positions</h2>
-                        </div>
-                        <div class="card-content" id="display-positions">
-                            <!-- Injected dynamically -->
-                        </div>
+                <!-- Gallery Section -->
+                <section class="card">
+                    <h2><i class="fa-solid fa-images text-primary"></i> Photo Gallery</h2>
+                    <div id="gallery-grid" class="gallery-grid">
+                        <!-- Dynamic items load here -->
                     </div>
-                </div>
-
-                <!-- Right Side Information Column -->
-                <div class="side-column">
-                    <!-- Media Gallery Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-images"></i> Media Gallery</h2>
-                        </div>
-                        <div class="card-content">
-                            <div class="gallery-grid" id="display-gallery">
-                                <!-- Injected dynamically -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- File Portal Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2><i class="fas fa-folder-open"></i> File Portal</h2>
-                        </div>
-                        <div class="card-content" id="display-files">
-                            <!-- Injected dynamically -->
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- ADMIN PANEL VIEW -->
-        <section id="admin-view" class="tab-view">
-            <div class="admin-grid">
-                
-                <!-- Admin Card: Events Manager -->
-                <div class="card admin-card">
-                    <div class="card-header admin-hdr">
-                        <h3><i class="fas fa-plus-circle"></i> Manage Events</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label>Event Title</label>
-                            <input type="text" id="event-title" placeholder="e.g., Monthly Chapter Meeting">
-                        </div>
-                        <div class="form-group">
-                            <label>Date & Time</label>
-                            <input type="text" id="event-date" placeholder="e.g., Oct 15, 3:30 PM">
-                        </div>
-                        <button class="btn btn-primary" onclick="addData('events')">Add Event</button>
-                    </div>
-                </div>
-
-                <!-- Admin Card: Positions Manager -->
-                <div class="card admin-card">
-                    <div class="card-header admin-hdr">
-                        <h3><i class="fas fa-plus-circle"></i> Manage Competitions / Officers</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label>Title/Role Name</label>
-                            <input type="text" id="pos-title" placeholder="e.g., Chapter President / Welding Tech">
-                        </div>
-                        <div class="form-group">
-                            <label>Type Category</label>
-                            <select id="pos-type">
-                                <option value="Officer Position">Officer Position</option>
-                                <option value="Skill Competition">Skill Competition</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="addData('positions')">Add Position</button>
-                    </div>
-                </div>
-
-                <!-- Admin Card: Gallery Manager -->
-                <div class="card admin-card">
-                    <div class="card-header admin-hdr">
-                        <h3><i class="fas fa-plus-circle"></i> Add Gallery Image</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label>Image URL</label>
-                            <input type="text" id="gal-url" placeholder="Paste image web link or local path">
-                        </div>
-                        <button class="btn btn-primary" onclick="addData('gallery')">Add Photo</button>
-                    </div>
-                </div>
-
-                <!-- Admin Card: Files Manager -->
-                <div class="card admin-card">
-                    <div class="card-header admin-hdr">
-                        <h3><i class="fas fa-plus-circle"></i> File Portal Links</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="form-group">
-                            <label>File Display Name</label>
-                            <input type="text" id="file-name" placeholder="e.g., Meeting Minutes Oct.pdf">
-                        </div>
-                        <div class="form-group">
-                            <label>Cloud URL or Path</label>
-                            <input type="text" id="file-url" placeholder="Google Drive, OneDrive link, etc.">
-                        </div>
-                        <button class="btn btn-primary" onclick="addData('files')">Add File Link</button>
-                    </div>
-                </div>
-
+                </section>
             </div>
 
-            <!-- Clear Action Area -->
-            <div style="margin-top: 20px; text-align: center;">
-                <button class="btn btn-danger" onclick="resetPortalData()"><i class="fas fa-trash-alt"></i> Reset Portal to Default Template</button>
-            </div>
-        </section>
+            <!-- Right Column: Competitions/Officers & Files -->
+            <div class="sidebar-column">
+                <!-- Competitions & Officers Section -->
+                <section class="card">
+                    <h2><i class="fa-solid fa-users-gear text-primary"></i> Roles & Competitions</h2>
+                    <div class="filter-tabs">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="Officer">Officers</button>
+                        <button class="filter-btn" data-filter="Competition">Competitions</button>
+                    </div>
+                    <div id="roles-list" class="roles-list">
+                        <!-- Dynamic items load here -->
+                    </div>
+                </section>
 
+                <!-- File Portal Section -->
+                <section class="card">
+                    <h2><i class="fa-solid fa-folder-open text-primary"></i> Document Portal</h2>
+                    <div id="files-list" class="files-list">
+                        <!-- Dynamic items load here -->
+                    </div>
+                </section>
+            </div>
+        </div>
     </main>
+
+    <!-- PRIVATE ADMIN PANEL (HIDDEN BY DEFAULT) -->
+    <div id="admin-view" class="container hidden">
+        <header class="admin-header">
+            <h2><i class="fa-solid fa-sliders"></i> Private Chapter Control Panel</h2>
+            <p>Add, edit, or delete items instantly across the portal dashboard.</p>
+        </header>
+
+        <!-- Form Module -->
+        <section class="card admin-card">
+            <h3 id="form-title">Create New Entry</h3>
+            <form id="admin-form">
+                <!-- Hidden inputs to track edits -->
+                <input type="hidden" id="item-id">
+                <input type="hidden" id="form-action" value="create">
+
+                <div class="form-group">
+                    <label for="item-type">Module Category</label>
+                    <select id="item-type" required>
+                        <option value="">-- Choose Module --</option>
+                        <option value="event">Event / Meeting</option>
+                        <option value="role">Officer Position / Competition</option>
+                        <option value="gallery">Gallery Photo</option>
+                        <option value="file">Portal File Link</option>
+                    </select>
+                </div>
+
+                <!-- Dynamic input clusters managed by JS -->
+                <div id="dynamic-inputs"></div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submit-btn" class="btn btn-primary">Save Entry</button>
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary hidden">Cancel Edit</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Management/CRUD Data Table -->
+        <section class="card admin-card">
+            <h3>Manage Existing Content</h3>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Primary Details</th>
+                            <th>Secondary Information / Links</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="management-table-body">
+                        <!-- Existing database entries load here with Edit/Delete buttons -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -1,129 +1,228 @@
-// Fallback Starter Template Data
-const defaultTemplateData = {
-    events: [
-        { title: "Kickoff Informational Meeting", date: "Sept 10, 3:30 PM" },
-        { title: "Fall Leadership Conference", date: "Oct 24, All Day" }
-    ],
-    positions: [
-        { title: "Chapter President", type: "Officer Position" },
-        { title: "Automotive Service Technology", type: "Skill Competition" },
-        { title: "Chapter Secretary", type: "Officer Position" }
-    ],
-    gallery: [
-        { url: "https://picsum.photos/200?random=1" },
-        { url: "https://picsum.photos/200?random=2" },
-        { url: "https://picsum.photos/200?random=3" }
-    ],
-    files: [
-        { name: "Chapter Bylaws.pdf", url: "#" },
-        { name: "Meeting Minutes - Sept.pdf", url: "#" }
-    ]
-};
+// --- Security Configuration Engine ---
+const ADMIN_PASSWORD = "SkillsUSA2026";
 
-// Initialize app data state from browser localStorage or template defaults
-let portalData = JSON.parse(localStorage.getItem('skillsusa_portal_data'));
-if (!portalData) {
-    portalData = { ...defaultTemplateData };
-    localStorage.setItem('skillsusa_portal_data', JSON.stringify(portalData));
+// --- State Database Engine ---
+let appData = JSON.parse(localStorage.getItem('skillsusa_portal_data')) || [
+    // Pre-populate with default items if empty
+    { id: "1", type: "event", title: "Chapter Kickoff Meeting", datetime: "Oct 12, 4:00 PM", desc: "Introduction to Competitions and officer election schedules." },
+    { id: "2", type: "role", title: "Chapter President", category: "Officer", desc: "Leads local meetings and coordinates chapter tasks." },
+    { id: "3", type: "role", title: "Welding Fabrication", category: "Competition", desc: "Team structural design and manufacturing skill assessment." },
+    { id: "4", type: "file", title: "Meeting Minutes - Sept", url: "#", desc: "Official layout documentation from our planning council." },
+    { id: "5", type: "gallery", title: "State Conference", url: "https://unsplash.com" }
+];
+
+// --- Authentication Session Check ---
+function checkAuth() {
+    return sessionStorage.getItem('admin_authenticated') === 'true';
 }
 
-// Controls viewing shifts between Dashboard & Admin modes
-function switchTab(targetTab) {
-    document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
-    document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
-    
-    if (targetTab === 'dashboard') {
-        document.getElementById('dashboard-view').classList.add('active');
-        event.currentTarget.classList.add('active');
-        renderDashboard();
-    } else if (targetTab === 'admin') {
-        document.getElementById('admin-view').classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
-}
-
-// Appends data rows input from Admin forms into browser storage array matrices
-function addData(category) {
-    if (category === 'events') {
-        const title = document.getElementById('event-title').value.trim();
-        const date = document.getElementById('event-date').value.trim();
-        if (!title || !date) return alert("Please fill in all event details.");
-        portalData.events.push({ title, date });
-        document.getElementById('event-title').value = '';
-        document.getElementById('event-date').value = '';
-    } 
-    else if (category === 'positions') {
-        const title = document.getElementById('pos-title').value.trim();
-        const type = document.getElementById('pos-type').value;
-        if (!title) return alert("Please fill in position title.");
-        portalData.positions.push({ title, type });
-        document.getElementById('pos-title').value = '';
-    } 
-    else if (category === 'gallery') {
-        const url = document.getElementById('gal-url').value.trim();
-        if (!url) return alert("Please fill in an image link path.");
-        portalData.gallery.push({ url });
-        document.getElementById('gal-url').value = '';
-    } 
-    else if (category === 'files') {
-        const name = document.getElementById('file-name').value.trim();
-        const url = document.getElementById('file-url').value.trim() || "#";
-        if (!name) return alert("Please fill in file display name.");
-        portalData.files.push({ name, url });
-        document.getElementById('file-name').value = '';
-        document.getElementById('file-url').value = '';
-    }
-
-    localStorage.setItem('skillsusa_portal_data', JSON.stringify(portalData));
-    alert("Saved successfully!");
-}
-
-// Clears added tracking strings down back to basic layout blueprints
-function resetPortalData() {
-    if (confirm("Are you sure you want to clear all data updates and restore template defaults?")) {
-        portalData = JSON.parse(JSON.stringify(defaultTemplateData));
-        localStorage.setItem('skillsusa_portal_data', JSON.stringify(portalData));
-        alert("Portal storage wiped clean and reset.");
-        renderDashboard();
-    }
-}
-
-// Reads structured storage memory to layout blocks onto visible dashboard templates
-function renderDashboard() {
-    // Events
-    const eventsContainer = document.getElementById('display-events');
-    eventsContainer.innerHTML = portalData.events.map(ev => `
-        <div class="item-row">
-            <strong>${ev.title}</strong>
-            <span class="badge">${ev.date}</span>
-        </div>
-    `).join('') || '<p style="color:#777;">No events scheduled.</p>';
-
-    // Positions
-    const positionsContainer = document.getElementById('display-positions');
-    positionsContainer.innerHTML = portalData.positions.map(pos => `
-        <div class="item-row">
-            <span>${pos.title}</span>
-            <span class="badge ${pos.type === 'Skill Competition' ? 'badge-alt' : ''}">${pos.type}</span>
-        </div>
-    `).join('') || '<p style="color:#777;">No positions registered.</p>';
-
-    // Gallery
-    const galleryContainer = document.getElementById('display-gallery');
-    galleryContainer.innerHTML = portalData.gallery.map(img => `
-        <img src="${img.url}" alt="Chapter Event Visual" onerror="this.src='https://picsum.photos/100?blur=2';">
-    `).join('') || '<p style="color:#777; grid-column: 1/-1;">Gallery is empty.</p>';
-
-    // Files
-    const filesContainer = document.getElementById('display-files');
-    filesContainer.innerHTML = portalData.files.map(f => `
-        <div class="item-row">
-            <a href="${f.url}" target="_blank" class="file-link"><i class="far fa-file-alt"></i> ${f.name}</a>
-        </div>
-    `).join('') || '<p style="color:#777;">No files uploaded.</p>';
-}
-
-// Initial Run Command on Load
+// --- App Initialization Setup ---
 document.addEventListener("DOMContentLoaded", () => {
     renderDashboard();
+    setupEventListeners();
+    setupDynamicFormInputs();
 });
+
+// --- Core Workspace Router ---
+function setupEventListeners() {
+    const loginBtn = document.getElementById("admin-login-btn");
+    const logoutBtn = document.getElementById("admin-logout-btn");
+    const dashboardView = document.getElementById("dashboard-view");
+    const adminView = document.getElementById("admin-view");
+    const dashboardNavBtn = document.getElementById("view-dashboard-btn");
+
+    // Enforced Password Protected Access Routing
+    loginBtn.addEventListener("click", () => {
+        if (checkAuth()) {
+            showAdminPanel();
+        } else {
+            const passwordAttempt = prompt("Enter Chapter Admin Password:");
+            if (passwordAttempt === ADMIN_PASSWORD) {
+                sessionStorage.setItem('admin_authenticated', 'true');
+                showAdminPanel();
+            } else if (passwordAttempt !== null) {
+                alert("Incorrect password. Access denied.");
+            }
+        }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+        sessionStorage.removeItem('admin_authenticated');
+        showDashboardView();
+        alert("Logged out successfully.");
+    });
+
+    dashboardNavBtn.addEventListener("click", showDashboardView);
+
+    // Filtering controls for Roles/Competitions
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            e.target.classList.add("active");
+            renderRoles(e.target.dataset.filter);
+        });
+    });
+
+    // Form Submissions
+    document.getElementById("item-type").addEventListener("change", setupDynamicFormInputs);
+    document.getElementById("admin-form").addEventListener("submit", handleFormSubmit);
+    document.getElementById("cancel-edit-btn").addEventListener("click", resetAdminForm);
+}
+
+function showAdminPanel() {
+    document.getElementById("admin-view").classList.remove("hidden");
+    document.getElementById("dashboard-view").classList.add("hidden");
+    document.getElementById("admin-login-btn").classList.add("hidden");
+    document.getElementById("admin-logout-btn").classList.remove("hidden");
+    document.getElementById("view-dashboard-btn").classList.remove("active");
+    renderManagementTable();
+}
+
+function showDashboardView() {
+    document.getElementById("dashboard-view").classList.remove("hidden");
+    document.getElementById("admin-view").classList.add("hidden");
+    document.getElementById("view-dashboard-btn").classList.add("active");
+    if (checkAuth()) {
+        document.getElementById("admin-login-btn").classList.add("hidden");
+        document.getElementById("admin-logout-btn").classList.remove("hidden");
+    } else {
+        document.getElementById("admin-login-btn").classList.remove("hidden");
+        document.getElementById("admin-logout-btn").classList.add("hidden");
+    }
+    renderDashboard();
+}
+
+// --- Dynamic Form Renderer ---
+function setupDynamicFormInputs() {
+    const type = document.getElementById("item-type").value;
+    const container = document.getElementById("dynamic-inputs");
+    container.innerHTML = ""; // Clear old variables
+
+    if (!type) return;
+
+    // Common configurations
+    let fields = `<div class="form-group"><label>Title / Name</label><input type="text" id="input-title" required placeholder="e.g., Regional Leadership Conference"></div>`;
+
+    if (type === "event") {
+        fields += `<div class="form-group"><label>Date & Time String</label><input type="text" id="input-datetime" required placeholder="e.g., Oct 24, 5:00 PM"></div>`;
+    } else if (type === "role") {
+        fields += `<div class="form-group"><label>Role Classification</label><select id="input-category" required><option value="Officer">Officer Position</option><option value="Competition">Skills Competition</option></select></div>`;
+    } else if (type === "gallery" || type === "file") {
+        fields += `<div class="form-group"><label>${type === 'gallery' ? 'Image Web URL' : 'File Target URL'}</label><input type="text" id="input-url" required placeholder="e.g., https://google.com..."></div>`;
+    }
+
+    fields += `<div class="form-group"><label>Short Description</label><textarea id="input-desc" rows="3" placeholder="Brief outline detailing the entry..."></textarea></div>`;
+    container.innerHTML = fields;
+}
+
+// --- CRUD Database Operations ---
+function handleFormSubmit(e) {
+    e.preventDefault();
+    if (!checkAuth()) return alert("Session expired. Please log in again.");
+
+    const id = document.getElementById("item-id").value;
+    const action = document.getElementById("form-action").value;
+    const type = document.getElementById("item-type").value;
+
+    const newItem = {
+        id: action === "edit" ? id : Date.now().toString(),
+        type: type,
+        title: document.getElementById("input-title").value,
+        desc: document.getElementById("input-desc").value
+    };
+
+    if (type === "event") newItem.datetime = document.getElementById("input-datetime").value;
+    if (type === "role") newItem.category = document.getElementById("input-category").value;
+    if (type === "gallery" || type === "file") newItem.url = document.getElementById("input-url").value;
+
+    if (action === "edit") {
+        const index = appData.findIndex(item => item.id === id);
+        if (index !== -1) appData[index] = newItem;
+    } else {
+        appData.push(newItem);
+    }
+
+    saveData();
+    resetAdminForm();
+    renderManagementTable();
+    alert("Database update executed successfully!");
+}
+
+function startEdit(id) {
+    const item = appData.find(i => i.id === id);
+    if (!item) return;
+
+    document.getElementById("form-title").innerText = "Modify Existing Entry";
+    document.getElementById("form-action").value = "edit";
+    document.getElementById("item-id").value = item.id;
+    
+    const typeSelect = document.getElementById("item-type");
+    typeSelect.value = item.type;
+    typeSelect.disabled = true; // Prevent changing item type mid-edit
+
+    setupDynamicFormInputs();
+
+    // Populate values
+    document.getElementById("input-title").value = item.title;
+    document.getElementById("input-desc").value = item.desc;
+    if (item.type === "event") document.getElementById("input-datetime").value = item.datetime;
+    if (item.type === "role") document.getElementById("input-category").value = item.category;
+    if (item.type === "gallery" || item.type === "file") document.getElementById("input-url").value = item.url;
+
+    document.getElementById("submit-btn").innerText = "Update Item";
+    document.getElementById("cancel-edit-btn").classList.remove("hidden");
+    
+    // Scroll smoothly to form workspace view
+    document.getElementById("admin-form").scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteItem(id) {
+    if (confirm("Are you sure you want to permanently delete this item?")) {
+        appData = appData.filter(item => item.id !== id);
+        saveData();
+        renderManagementTable();
+    }
+}
+
+function resetAdminForm() {
+    document.getElementById("admin-form").reset();
+    document.getElementById("form-title").innerText = "Create New Entry";
+    document.getElementById("form-action").value = "create";
+    document.getElementById("item-id").value = "";
+    
+    const typeSelect = document.getElementById("item-type");
+    typeSelect.disabled = false;
+    
+    document.getElementById("dynamic-inputs").innerHTML = "";
+    document.getElementById("submit-btn").innerText = "Save Entry";
+    document.getElementById("cancel-edit-btn").classList.add("hidden");
+}
+
+function saveData() {
+    localStorage.setItem('skillsusa_portal_data', JSON.stringify(appData));
+}
+
+// --- Public Dashboard UI Render Engine ---
+function renderDashboard() {
+    renderEvents();
+    renderRoles("all");
+    renderFiles();
+    renderGallery();
+}
+
+function renderEvents() {
+    const container = document.getElementById("events-list");
+    const events = appData.filter(i => i.type === "event");
+    container.innerHTML = events.length ? "" : "<p>No upcoming events or meetings currently posted.</p>";
+    events.forEach(ev => {
+        container.innerHTML += `
+            <div class="timeline-item">
+                <span class="event-time"><i class="fa-regular fa-clock"></i> ${ev.datetime}</span>
+                <div class="event-title">${ev.title}</div>
+                <p style="font-size: 0.9rem; color: #64748B;">${ev.desc}</p>
+            </div>`;
+    });
+}
+
+function renderRoles(filter) {
+    const container = document.getElementById("roles-list");

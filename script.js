@@ -3,7 +3,6 @@ const ADMIN_PASSWORD = "SkillsUSA2026";
 
 // --- State Database Engine ---
 let appData = JSON.parse(localStorage.getItem('skillsusa_portal_data')) || [
-    // Pre-populate with default items if empty
     { id: "1", type: "event", title: "Chapter Kickoff Meeting", datetime: "Oct 12, 4:00 PM", desc: "Introduction to Competitions and officer election schedules." },
     { id: "2", type: "role", title: "Chapter President", category: "Officer", desc: "Leads local meetings and coordinates chapter tasks." },
     { id: "3", type: "role", title: "Welding Fabrication", category: "Competition", desc: "Team structural design and manufacturing skill assessment." },
@@ -27,8 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function setupEventListeners() {
     const loginBtn = document.getElementById("admin-login-btn");
     const logoutBtn = document.getElementById("admin-logout-btn");
-    const dashboardView = document.getElementById("dashboard-view");
-    const adminView = document.getElementById("admin-view");
     const dashboardNavBtn = document.getElementById("view-dashboard-btn");
 
     // Enforced Password Protected Access Routing
@@ -54,12 +51,15 @@ function setupEventListeners() {
 
     dashboardNavBtn.addEventListener("click", showDashboardView);
 
-    // Filtering controls for Roles/Competitions
-    document.querySelectorAll(".filter-btn").forEach(btn => {
+    // FIXED: Filtering controls for Roles/Competitions
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    filterButtons.forEach(btn => {
         btn.addEventListener("click", (e) => {
-            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-            e.target.classList.add("active");
-            renderRoles(e.target.dataset.filter);
+            filterButtons.forEach(b => b.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+            
+            const filterValue = e.currentTarget.getAttribute("data-filter");
+            renderRoles(filterValue);
         });
     });
 
@@ -96,11 +96,10 @@ function showDashboardView() {
 function setupDynamicFormInputs() {
     const type = document.getElementById("item-type").value;
     const container = document.getElementById("dynamic-inputs");
-    container.innerHTML = ""; // Clear old variables
+    container.innerHTML = ""; 
 
     if (!type) return;
 
-    // Common configurations
     let fields = `<div class="form-group"><label>Title / Name</label><input type="text" id="input-title" required placeholder="e.g., Regional Leadership Conference"></div>`;
 
     if (type === "event") {
@@ -158,11 +157,10 @@ function startEdit(id) {
     
     const typeSelect = document.getElementById("item-type");
     typeSelect.value = item.type;
-    typeSelect.disabled = true; // Prevent changing item type mid-edit
+    typeSelect.disabled = true; 
 
     setupDynamicFormInputs();
 
-    // Populate values
     document.getElementById("input-title").value = item.title;
     document.getElementById("input-desc").value = item.desc;
     if (item.type === "event") document.getElementById("input-datetime").value = item.datetime;
@@ -172,9 +170,11 @@ function startEdit(id) {
     document.getElementById("submit-btn").innerText = "Update Item";
     document.getElementById("cancel-edit-btn").classList.remove("hidden");
     
-    // Scroll smoothly to form workspace view
     document.getElementById("admin-form").scrollIntoView({ behavior: 'smooth' });
 }
+
+// FIXED: Exposed globally to handle inline HTML onclick events cleanly
+window.startEdit = startEdit;
 
 function deleteItem(id) {
     if (confirm("Are you sure you want to permanently delete this item?")) {
@@ -183,6 +183,7 @@ function deleteItem(id) {
         renderManagementTable();
     }
 }
+window.deleteItem = deleteItem;
 
 function resetAdminForm() {
     document.getElementById("admin-form").reset();
@@ -226,4 +227,6 @@ function renderEvents() {
 
 function renderRoles(filter) {
     const container = document.getElementById("roles-list");
-    const roles = appData.filter(i => i.type === "role" && (filter === "all" || i.category === filter));container.innerHTML = roles.length ? "" : "No entries found.";roles.forEach(r => {const badgeClass = r.category === "Officer" ? "badge-officer" : "badge-competition";container.innerHTML +=  <div class="role-card"> <span class="badge ${badgeClass}">${r.category}</span> <strong style="display:block; font-size:1rem;">${r.title}</strong> <p style="font-size:0.85rem; color:#475569; margin-top:2px;">${r.desc}</p> </div>;});}function renderFiles() {const container = document.getElementById("files-list");const files = appData.filter(i => i.type === "file");container.innerHTML = files.length ? "" : "No documentation uploads listed yet.";files.forEach(f => {container.innerHTML +=  <a href="${f.url}" target="_blank" class="file-link"> <i class="fa-solid fa-file-pdf"></i> <div> <strong style="font-size:0.9rem; display:block;">${f.title}</strong> <span style="font-size:0.75rem; color:#64748B;">${f.desc}</span> </div> </a>;});}function renderGallery() {const container = document.getElementById("gallery-grid");const photos = appData.filter(i => i.type === "gallery");container.innerHTML = photos.length ? "" : "No image gallery objects uploaded.";photos.forEach(p => {container.innerHTML +=  <div class="gallery-card"> <img src="${p.url}" alt="${p.title}" onerror="this.src='https://unsplash.com'"> <div class="gallery-caption">${p.title}</div> </div>;});}// --- Management Table Interface Render Engine ---function renderManagementTable() {const tbody = document.getElementById("management-table-body");tbody.innerHTML = appData.length ? "" : "No entries exist in database yet.";appData.forEach(item => {let secondColumn = item.desc;let thirdColumn = "";if (item.type === "event") thirdColumn = ⏱️ ${item.datetime};if (item.type === "role") thirdColumn = 🏷️ Category: <b>${item.category}</b>;if (item.type === "gallery" || item.type === "file") {thirdColumn = <a href="${item.url}" target="_blank" class="text-primary" style="word-break:break-all;">${item.url}</a>;}tbody.innerHTML += `${item.type}${item.title}\({thirdColumn}<br>\){secondColumn}`;});}
+    const roles = appData.filter(i => i.type === "role" && (filter === "all" || i.category === filter));
+    container.innerHTML = roles.length ? "" : "<p>No entries found.</p>";
+roles.forEach(r => {const badgeClass = r.category === "Officer" ? "badge-officer" : "badge-competition";container.innerHTML +=  <div class="role-card"> <span class="badge ${badgeClass}">${r.category}</span> <strong style="display:block; font-size:1rem;">${r.title}</strong> <p style="font-size:0.85rem; color:#475569; margin-top:2px;">${r.desc}</p> </div>;});}function renderFiles() {const container = document.getElementById("files-list");const files = appData.filter(i => i.type === "file");container.innerHTML = files.length ? "" : "No documentation uploads listed yet.";files.forEach(f => {container.innerHTML +=  <a href="${f.url}" target="_blank" class="file-link"> <i class="fa-solid fa-file-pdf"></i> <div> <strong style="font-size:0.9rem; display:block;">${f.title}</strong> <span style="font-size:0.75rem; color:#64748B;">${f.desc}</span> </div> </a>;});}function renderGallery() {const container = document.getElementById("gallery-grid");const photos = appData.filter(i => i.type === "gallery");container.innerHTML = photos.length ? "" : "No image gallery objects uploaded.";photos.forEach(p => {container.innerHTML +=  <div class="gallery-card"> <img src="${p.url}" alt="${p.title}" onerror="this.src='https://unsplash.com'"> <div class="gallery-caption">${p.title}</div> </div>;});}// --- Management Table Interface Render Engine ---function renderManagementTable() {const tbody = document.getElementById("management-table-body");tbody.innerHTML = appData.length ? "" : "No entries exist in database yet.";appData.forEach(item => {let secondColumn = item.desc;let thirdColumn = "";if (item.type === "event") thirdColumn = ⏱️ ${item.datetime};if (item.type === "role") thirdColumn = 🏷️ Category: <b>${item.category}</b>;if (item.type === "gallery" || item.type === "file") {thirdColumn = <a href="${item.url}" target="_blank" class="text-primary" style="word-break:break-all;">${item.url}</a>;}tbody.innerHTML += `${item.type}${item.title}\({thirdColumn}<br>\){secondColumn}`;});}

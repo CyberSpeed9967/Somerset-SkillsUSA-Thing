@@ -225,3 +225,35 @@ function renderRoles(filter) {
 
 function renderFiles() {
     const container = document.getElementById("files-list");
+const files = appData.filter(i => i.type === "file");
+container.innerHTML = files.length ? "" : "No files linked yet.";
+files.forEach(f => {
+container.innerHTML += <a href="${f.url}" target="_blank" class="file-link"> <i class="fa-solid fa-file-pdf"></i> <div> <strong style="font-size:0.9rem; display:block;">${f.title}</strong> <span style="font-size:0.75rem; color:#64748B;">${f.desc}</span> </div> </a>;
+});
+}
+// Default layout fallbacks for blank cards
+function renderGallery() {
+const container = document.getElementById("gallery-grid");
+const photos = appData.filter(i => i.type === "gallery");
+container.innerHTML = photos.length ? "" : "No images uploaded yet.";
+photos.forEach(p => {
+container.innerHTML += <div class="gallery-card"> <img src="${p.url}" alt="${p.title}" onerror="this.src='https://unsplash.com'"> <div class="gallery-caption">${p.title}</div> </div>;
+});
+}
+function renderManagementTable() {
+const tbody = document.getElementById("management-table-body");
+tbody.innerHTML = appData.length ? "" : "Database empty.";
+appData.forEach(item => {
+let thirdColumn = "";
+if (item.type === "event") thirdColumn = ⏱️ ${item.datetime};
+if (item.type === "role") thirdColumn = 🏷️ Class: <b>${item.category}</b>;
+if (item.type === "gallery" || item.type === "file") {
+thirdColumn = <span style="word-break:break-all; font-size:0.8rem; color:#002F6C;">${item.url}</span>;
+}
+tbody.innerHTML += `
+${item.type}
+${item.title}
+\({thirdColumn}<br>\){item.desc}
+`;
+});
+}

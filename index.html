@@ -4,120 +4,592 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillsUSA Chapter Portal</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for clean modern icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
-</head>
-<body>
+    
+    <style>
+        /* --- SkillsUSA Official Color Guidelines --- */
+        :root {
+            --primary-blue: #002F6C;
+            --accent-red: #D22630;
+            --gold: #FFC72C;
+            --light-bg: #F4F6F9;
+            --dark-text: #1E293B;
+            --white: #FFFFFF;
+            --border-color: #E2E8F0;
+        }
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="brand" id="nav-logo">🏆 SkillsUSA Portal</a>
-            <div class="nav-links">
-                <button id="view-dashboard-btn" class="nav-btn active"><i class="fa-solid fa-gauge"></i> Dashboard</button>
-                <button id="admin-login-btn" class="nav-btn login-btn"><i class="fa-solid fa-lock"></i> Admin Login</button>
-                <button id="admin-logout-btn" class="nav-btn logout-btn hidden"><i class="fa-solid fa-lock-open"></i> Logout</button>
-            </div>
-        </div>
-    </nav>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <!-- MAIN DASHBOARD (PUBLIC VIEW) -->
-    <main id="dashboard-view" class="container">
-        <header class="hero">
-            <h1>Welcome to our SkillsUSA Chapter</h1>
-            <p>Your central hub for events, competitions, leadership roles, and chapter resources.</p>
-        </header>
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
 
-        <div class="dashboard-grid">
-            <div class="main-column">
-                <!-- Events Section -->
-                <section class="card">
-                    <h2><i class="fa-solid fa-calendar-days text-primary"></i> Upcoming Events & Meetings</h2>
-                    <div id="events-list" class="timeline"></div>
-                </section>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-                <!-- Gallery Section -->
-                <section class="card">
-                    <h2><i class="fa-solid fa-images text-primary"></i> Photo Gallery</h2>
-                    <div id="gallery-grid" class="gallery-grid"></div>
-                </section>
-            </div>
+        .hidden {
+            display: none !important;
+        }
 
-            <div class="sidebar-column">
-                <!-- Competitions & Officers Section -->
-                <section class="card">
-                    <h2><i class="fa-solid fa-users-gear text-primary"></i> Roles & Competitions</h2>
-                    <div class="filter-tabs">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="Officer">Officers</button>
-                        <button class="filter-btn" data-filter="Competition">Competitions</button>
-                    </div>
-                    <div id="roles-list" class="roles-list"></div>
-                </section>
+        /* --- Navigation --- */
+        .navbar {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-                <!-- File Portal Section -->
-                <section class="card">
-                    <h2><i class="fa-solid fa-folder-open text-primary"></i> Document Portal</h2>
-                    <div id="files-list" class="files-list"></div>
-                </section>
-            </div>
-        </div>
-    </main>
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    <!-- PRIVATE ADMIN PANEL (HIDDEN BY DEFAULT) -->
-    <div id="admin-view" class="container hidden">
-        <header class="admin-header">
-            <h2><i class="fa-solid fa-sliders"></i> Private Chapter Control Panel</h2>
-            <p>Add, edit, or delete items instantly across the portal dashboard.</p>
-        </header>
+        .brand {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
 
-        <!-- Form Module -->
-        <section class="card admin-card">
-            <h3 id="form-title">Create New Entry</h3>
-            <form id="admin-form">
-                <input type="hidden" id="item-id">
-                <input type="hidden" id="form-action" value="create">
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-                <div class="form-group">
-                    <label for="item-type">Module Category</label>
-                    <select id="item-type" required>
-                        <option value="">-- Choose Module --</option>
-                        <option value="event">Event / Meeting</option>
-                        <option value="role">Officer Position / Competition</option>
-                        <option value="gallery">Gallery Photo</option>
-                        <option value="file">Portal File Link</option>
-                    </select>
-                </div>
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
 
-                <div id="dynamic-inputs"></div>
+        .nav-btn:hover, .nav-btn.active {
+            background-color: rgba(255,255,255,0.15);
+            border-color: var(--gold);
+        }
 
-                <div class="form-actions">
-                    <button type="submit" id="submit-btn" class="btn btn-primary">Save Entry</button>
-                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary hidden">Cancel Edit</button>
-                </div>
-            </form>
-        </section>
+        /* --- Inline Admin Login UI Container --- */
+        .admin-login-inline {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
 
-        <!-- Management Data Table -->
-        <section class="card admin-card">
-            <h3>Manage Existing Content</h3>
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Primary Details</th>
-                            <th>Secondary Information / Links</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="management-table-body"></tbody>
-                </table>
-            </div>
-        </section>
-    </div>
+        .admin-input {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--dark-text);
+            outline: none;
+            width: 140px;
+        }
 
-    <!-- Script loaded explicitly at the end -->
-    <script src="script.js"></script>
-</body>
-</html>
+        .submit-login-btn {
+            background-color: var(--gold);
+            color: var(--dark-text);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .logout-btn {
+            background-color: var(--accent-red);
+        }
+
+        /* --- Hero --- */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #001f47 100%);
+            color: var(--white);
+            padding: 40px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-red);
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- Dashboard Grid Architecture --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--light-bg);
+            padding-bottom: 10px;
+        }
+
+        .text-primary { color: var(--primary-blue); }
+
+        /* --- Component: Timeline / Events --- */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            border-left: 3px solid var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 5px;
+            background-color: var(--accent-red);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--white);
+        }
+
+        .event-time {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--accent-red);
+            display: block;
+        }
+
+        .event-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        /* --- Component: Roles / Competitions --- */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .filter-btn {
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+
+        .role-card {
+            background-color: var(--light-bg);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--gold);
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .badge-officer { background-color: #E0F2FE; color: #0369A1; }
+        .badge-competition { background-color: #FEF3C7; color: #B45309; }
+
+        /* --- Component: Files & Gallery --- */
+        .file-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--dark-text);
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+
+        .file-link:hover {
+            background-color: #E2E8F0;
+        }
+
+        .file-link i {
+            font-size: 1.3rem;
+            color: var(--accent-red);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-card {
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            padding: 8px;
+            font-size: 0.85rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* --- Admin Panel Forms --- */
+        .admin-header {
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary { background-color: var(--primary-blue); color: var(--white); }
+        .btn-secondary { background-color: #E2E8F0; color: var(--dark-text); margin-left: 8px;}
+        .btn-danger { background-color: var(--accent-red); color: var(--white); padding: 5px 10px; font-size: 0.8rem;}
+        .btn-edit { background-color: var(--gold); color: var(--dark-text); padding: 5px 10px; font-size: 0.8rem; margin-right: 4px;}
+
+        /* --- Control Table Management --- */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+border-bottom: 1px solid var(--border-color);
+}
+.admin-table th {
+background-color: var(--light-bg);
+font-weight: 600;
+}
+
+
+🏆 SkillsUSA Portal
+
+Dashboard
+Login
+Logout
+
+
+const ADMIN_PASSWORD = "SkillsUSA2026";
+let appData = JSON.parse(localStorage.getItem('skillsusa_portal_data')) || [
+{ id: "1", type: "event", title: "Chapter Kickoff Meeting", datetime: "Oct 12, 4:00 PM", desc: "Introduction to Competitions and officer election schedules." },
+{ id: "2", type: "role", title: "Chapter President", category: "Officer", desc: "Leads local meetings and coordinates chapter tasks." },
+{ id: "3", type: "role", title: "Welding Fabrication", category: "Competition", desc: "Team structural design and manufacturing skill assessment." },
+{ id: "4", type: "file", title: "Meeting Minutes - Sept", url: "#", desc: "Official layout documentation from our planning council." },
+{ id: "5", type: "gallery", title: "State Conference", url: "unsplash.com" }
+];
+function checkAuth() {
+return sessionStorage.getItem('admin_authenticated') === 'true';
+}
+window.onload = function() {
+renderDashboard();
+setupEventListeners();
+setupDynamicFormInputs();
+if (checkAuth()) {
+showAdminPanel();
+}
+};
+function setupEventListeners() {
+const logoutBtn = document.getElementById("admin-logout-btn");
+const dashboardNavBtn = document.getElementById("view-dashboard-btn");
+const inlineSubmitBtn = document.getElementById("inline-submit-btn");
+const inlinePasswordInput = document.getElementById("inline-password-input");
+inlineSubmitBtn.addEventListener("click", () => {
+if (inlinePasswordInput.value === ADMIN_PASSWORD) {
+sessionStorage.setItem('admin_authenticated', 'true');
+inlinePasswordInput.value = "";
+showAdminPanel();
+} else {
+alert("Incorrect secret key code. Entry barred.");
+}
+});
+logoutBtn.addEventListener("click", () => {
+sessionStorage.removeItem('admin_authenticated');
+showDashboardView();
+});
+dashboardNavBtn.addEventListener("click", showDashboardView);
+document.getElementById("filter-all-btn").addEventListener("click", (e) => {
+toggleFilterClasses(e.target);
+renderRoles("all");
+});
+document.getElementById("filter-officer-btn").addEventListener("click", (e) => {
+toggleFilterClasses(e.target);
+renderRoles("Officer");
+});
+document.getElementById("filter-competition-btn").addEventListener("click", (e) => {
+toggleFilterClasses(e.target);
+renderRoles("Competition");
+});
+document.getElementById("item-type").addEventListener("change", setupDynamicFormInputs);
+document.getElementById("admin-form").addEventListener("submit", handleFormSubmit);
+document.getElementById("cancel-edit-btn").addEventListener("click", resetAdminForm);
+}
+function toggleFilterClasses(activeBtn) {
+document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+activeBtn.classList.add("active");
+}
+function showAdminPanel() {
+document.getElementById("admin-view").classList.remove("hidden");
+document.getElementById("dashboard-view").classList.add("hidden");
+document.getElementById("inline-login-box").classList.add("hidden");
+document.getElementById("admin-logout-btn").classList.remove("hidden");
+document.getElementById("view-dashboard-btn").classList.remove("active");
+renderManagementTable();
+}
+function showDashboardView() {
+document.getElementById("dashboard-view").classList.remove("hidden");
+document.getElementById("admin-view").classList.add("hidden");
+document.getElementById("view-dashboard-btn").classList.add("active");
+if (checkAuth()) {
+document.getElementById("inline-login-box").classList.add("hidden");
+document.getElementById("admin-logout-btn").classList.remove("hidden");
+} else {
+document.getElementById("inline-login-box").classList.remove("hidden");
+document.getElementById("admin-logout-btn").classList.add("hidden");
+}
+renderDashboard();
+}
+function setupDynamicFormInputs() {
+const type = document.getElementById("item-type").value;
+const container = document.getElementById("dynamic-inputs");
+container.innerHTML = "";
+if (!type) return;
+let fields = <div class="form-group"><label>Title / Name</label><input type="text" id="input-title" required placeholder="Name/Title entry..."></div>;
+if (type === "event") {
+fields += <div class="form-group"><label>Date & Time String</label><input type="text" id="input-datetime" required placeholder="e.g., Oct 24, 5:00 PM"></div>;
+} else if (type === "role") {
+fields += <div class="form-group"><label>Role Classification</label><select id="input-category" required><option value="Officer">Officer Position</option><option value="Competition">Skills Competition</option></select></div>;
+} else if (type === "gallery" || type === "file") {
+fields += <div class="form-group"><label>${type === 'gallery' ? 'Image URL' : 'File Target URL'}</label><input type="text" id="input-url" required placeholder="https://..."></div>;
+}
+fields += <div class="form-group"><label>Short Description</label><textarea id="input-desc" rows="3" placeholder="Brief details..."></textarea></div>;
+container.innerHTML = fields;
+}
+function handleFormSubmit(e) {
+e.preventDefault();
+if (!checkAuth()) return alert("Session unauthorized.");
+const id = document.getElementById("item-id").value;
+const action = document.getElementById("form-action").value;
+const type = document.getElementById("item-type").value;
+const newItem = {
+id: action === "edit" ? id : Date.now().toString(),
+type: type,
+title: document.getElementById("input-title").value,
+desc: document.getElementById("input-desc").value
+};
+if (type === "event") newItem.datetime = document.getElementById("input-datetime").value;
+if (type === "role") newItem.category = document.getElementById("input-category").value;
+if (type === "gallery" || type === "file") newItem.url = document.getElementById("input-url").value;
+if (action === "edit") {
+const index = appData.findIndex(item => item.id === id);
+if (index !== -1) appData[index] = newItem;
+} else {
+appData.push(newItem);
+}
+localStorage.setItem('skillsusa_portal_data', JSON.stringify(appData));
+resetAdminForm();
+renderManagementTable();
+alert("Saved successfully!");
+}
+function startEdit(id) {
+const item = appData.find(i => i.id === id);
+if (!item) return;
+document.getElementById("form-title").innerText = "Modify Existing Entry";
+document.getElementById("form-action").value = "edit";
+document.getElementById("item-id").value = item.id;
+const typeSelect = document.getElementById("item-type");
+typeSelect.value = item.type;
+typeSelect.disabled = true;
+setupDynamicFormInputs();
+document.getElementById("input-title").value = item.title;
+document.getElementById("input-desc").value = item.desc;
+if (item.type === "event") document.getElementById("input-datetime").value = item.datetime;
+if (item.type === "role") document.getElementById("input-category").value = item.category;
+if (item.type === "gallery" || item.type === "file") document.getElementById("input-url").value = item.url;
+document.getElementById("submit-btn").innerText = "Update Item";
+document.getElementById("cancel-edit-btn").classList.remove("hidden");
+}
+window.startEdit = startEdit;
+function deleteItem(id) {
+if (confirm("Permanently delete this entry?")) {
+appData = appData.filter(item => item.id !== id);
+localStorage.setItem('skillsusa_portal_data', JSON.stringify(appData));
+renderManagementTable();
+}
+}
+window.deleteItem = deleteItem;
+function resetAdminForm() {
+document.getElementById("admin-form").reset();
+document.getElementById("form-title").innerText = "Create New Entry";
+document.getElementById("form-action").value = "create";
+document.getElementById("item-id").value = "";
+document.getElementById("item-type").disabled = false;
+document.getElementById("dynamic-inputs").innerHTML = "";
+document.getElementById("submit-btn").innerText = "Save Entry";
+document.getElementById("cancel-edit-btn").classList.add("hidden");
+}
+function renderDashboard() {
+renderEvents();
+renderRoles("all");
+renderFiles();
+renderGallery();
+}
+function renderEvents() {
+const container = document.getElementById("events-list");
+const events = appData.filter(i => i.type === "event");
+container.innerHTML = events.length ? "" : "No upcoming events posted.";
+events.forEach(ev => {
+container.innerHTML += <div class="timeline-item"> <span class="event-time"><i class="fa-regular fa-clock"></i> ${ev.datetime}</span> <div class="event-title">${ev.title}</div> <p style="font-size: 0.9rem; color: #64748B;">${ev.desc}</p> </div>;
+});
+}
+function renderRoles(filter) {
+const container = document.getElementById("roles-list");
+const roles = appData.filter(i => i.type === "role" && (filter === "all" || i.category === filter));
+container.innerHTML = roles.length ? "" : "No positions found.";
+roles.forEach(r => {
+const badgeClass = r.category === "Officer" ? "badge-officer" : "badge-competition";
+container.innerHTML += <div class="role-card"> <span class="badge ${badgeClass}">${r.category}</span> <strong style="display:block; font-size:1rem;">${r.title}</strong> <p style="font-size:0.85rem; color:#475569; margin-top:2px;">${r.desc}</p> </div>;
+});
+}
+function renderFiles() {
+const container = document.getElementById("files-list");
+const files = appData.filter(i => i.type === "file");
+container.innerHTML = files.length ? "" : "No files linked yet.";
+files.forEach(f => {
+container.innerHTML += <a href="${f.url}" target="_blank" class="file-link"> <i class="fa-solid fa-file-pdf"></i> <div> <strong style="font-size:0.9rem; display:block;">${f.title}</strong> <span style="font-size:0.75rem; color:#64748B;">${f.desc}</span> </div> </a>;
+});
+}
+function renderGallery() {
+const container = document.getElementById("gallery-grid");
+const photos = appData.filter(i => i.type === "gallery");
+container.innerHTML = photos.length ? "" : "No images uploaded yet.";
+photos.forEach(p => {
+container.innerHTML += <div class="gallery-card"> <img src="${p.url}" alt="${p.title}" onerror="this.src='https://unsplash.com'"> <div class="gallery-caption">${p.title}</div> </div>;
+});
+}
+function renderManagementTable() {
+const tbody = document.getElementById("management-table-body");
+tbody.innerHTML = appData.length ? "" : "Database empty.";
+appData.forEach(item => {
+let thirdColumn = "";
+if (item.type === "event") thirdColumn = ⏱️ ${item.datetime};
+if (item.type === "role") thirdColumn = 🏷️ Class: <b>${item.category}</b>;
+if (item.type === "gallery" || item.type === "file") {
+thirdColumn = <span style="word-break:break-all; font-size:0.8rem; color:#002F6C;">${item.url}</span>;
+}
+tbody.innerHTML += `
+${item.type}
+${item.title}
+\({thirdColumn}<br>\){item.desc}
+`;
+});
+}

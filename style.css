@@ -1,0 +1,229 @@
+/* Basic Web Page Setup */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --navy: #002F6C;
+    --crimson: #D22630;
+    --gold: #FFC72C;
+    --bg: #F4F6F9;
+    --card-bg: #FFFFFF;
+    --text-dark: #333333;
+    --text-light: #777777;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text-dark);
+}
+
+/* Header Layout Styles */
+.main-header {
+    background-color: var(--navy);
+    color: white;
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.text-gold {
+    color: var(--gold);
+}
+
+.nav-links a {
+    color: #E0E6ED;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--gold);
+}
+
+/* Tab Content Visibility Switch rules */
+.portal-container {
+    padding: 30px 5%;
+}
+
+.tab-view {
+    display: none;
+}
+
+.tab-view.active {
+    display: block;
+}
+
+/* Grid Structures */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Cards & Content Component Outlines */
+.card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    overflow: hidden;
+    border-left: 5px solid var(--navy);
+}
+
+.admin-card {
+    border-left: 5px solid var(--crimson);
+}
+
+.card-header {
+    background: #FAFAFA;
+    padding: 15px 20px;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+.card-header h2, .card-header h3 {
+    font-size: 1.15rem;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-hdr h3 {
+    color: var(--crimson);
+}
+
+.card-content {
+    padding: 20px;
+}
+
+/* Elements UI Layouts */
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #F0F2F5;
+}
+
+.item-row:last-child {
+    border-bottom: none;
+}
+
+.badge {
+    background: #EBF3FF;
+    color: var(--navy);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.badge-alt {
+    background: #FFF9E6;
+    color: #B28200;
+}
+
+/* Gallery Module Layout */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #DDD;
+}
+
+/* Forms and Inputs Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Control Buttons Layout */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background-color: var(--navy);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #001F47;
+}
+
+.btn-danger {
+    background-color: var(--crimson);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #A61A22;
+}
+
+.file-link {
+    color: var(--navy);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
